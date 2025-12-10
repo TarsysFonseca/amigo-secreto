@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<title>Amigo Secreto 🎁</title>
+<style>
+    body { font-family: Arial; background:#f8f8f8; text-align:center; padding-top:60px; }
+    #card { background:white; padding:30px; border-radius:10px; width:330px; margin:auto; box-shadow:0 0 10px #0002; }
+    input { padding:10px; width:200px; margin-top:15px; font-size:16px; }
+    button { margin-top:10px; padding:10px 20px; cursor:pointer; font-size:16px; }
+    #resultado { margin-top:25px; font-size:18px; font-weight:bold; }
+</style>
+</head>
+<body>
+
+<div id="card">
+    <h2>Consulta Amigo Secreto</h2>
+    <p>Digite seu token ou acesse pelo link enviado</p>
+    <input id="token" placeholder="Digite o token">
+    <button onclick="buscar()">Ver meu amigo 🎁</button>
+    <div id="resultado"></div>
+</div>
+
+<script>
+const dados = {
+ "A92T":"Marcos Paulo",
+ "L3PA":"Cláudia",
+ "BR25":"Nilza",
+ "BB12":"Lúcia",
+ "CM88":"Barbara",
+ "OS47":"Clausi",
+ "MP90":"Paula",
+ "FD22":"Pedro",
+ "CL55":"Tarsys",
+ "PD61":"Clarissa",
+ "NZ73":"Cássia",
+ "ML14":"Fábio",
+ "CS09":"Claudete",
+ "FN31":"Oséias",
+ "CA82":"Marcos Luiz",
+ "FB37":"Bruna",
+ "LC44":"Fernandão",
+ "CT66":"Fernandinho",
+ "CR51":"Célia Maria"
+}
+
+function buscar(){
+    const t = document.getElementById("token").value.trim().toUpperCase();
+    document.getElementById("resultado").innerHTML =
+       dados[t] ? `🎅 Seu amigo secreto é <br><br><span style='font-size:22px'>${dados[t]}</span>` 
+                : "Token inválido ❌";
+}
+
+// preenche token se veio por URL ?token=XX
+const url = new URLSearchParams(window.location.search);
+if(url.get("token")){
+    document.getElementById("token").value = url.get("token");
+    buscar();
+}
+</script>
+</body>
+</html>
