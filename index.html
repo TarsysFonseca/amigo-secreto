@@ -2,7 +2,7 @@
 <html lang="pt-br">
 <head>
 <meta charset="UTF-8">
-<title>Amigo Secreto da Família</title>
+<title>Amigo Secreto da Família 2025</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
 <style>
@@ -112,7 +112,7 @@
 <body>
 
 <header>
-  <h1>🎉 Amigo Secreto da Família 🎁</h1>
+  <h1>🎉 Amigo Secreto da Família 2025 🎁</h1>
 </header>
 
 <nav>
@@ -170,6 +170,19 @@ function checkToken() {
       "❌ Token inválido. Verifique e tente novamente.";
   }
 }
+
+// Verifica se há um token na URL e executa automaticamente
+window.addEventListener('DOMContentLoaded', () => {
+  const urlParams = new URLSearchParams(window.location.search);
+  const tokenFromUrl = urlParams.get('token');
+  
+  if (tokenFromUrl) {
+    document.getElementById('tokenInput').value = tokenFromUrl;
+    checkToken();
+    // Scroll suave para a seção de resultado
+    document.getElementById('sorteio').scrollIntoView({ behavior: 'smooth' });
+  }
+});
 </script>
 
 
@@ -220,16 +233,23 @@ function renderTable(data, cols){
   let html = '<div class="cards-container">';
 
   data.forEach(row => {
-    const nome = row[0] || "Sem nome";
-    const sugestao = row[1] || "Sem sugestão";
+    const nome = row[2] || "Sem nome";
+    const s1 = row[3] || "Sem sugestão";
+    const s2 = row[4] || "Sem sugestão";
+    const s3 = row[5] || "Sem sugestão";
+
     
     // Converte URLs em links clicáveis
-    const sugestaoComLinks = linkify(sugestao);
+    const s1ComLinks = linkify(s1);
+    const s2ComLinks = linkify(s2);
+    const s3ComLinks = linkify(s3);
     
     html += `
       <div class="card">
         <div class="card-name">🎁 ${nome}</div>
-        <div class="card-suggestion">${sugestaoComLinks}</div>
+        <div class="card-suggestion">${s1ComLinks}</div>
+        <div class="card-suggestion">${s2ComLinks}</div>
+        <div class="card-suggestion">${s3ComLinks}</div>
       </div>
     `;
   });
