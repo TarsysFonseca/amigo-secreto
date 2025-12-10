@@ -2,27 +2,96 @@
 <html lang="pt-br">
 <head>
 <meta charset="UTF-8">
-<title>Amigo Secreto 🎁</title>
+<title>Amigo Secreto da Família</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
 <style>
-    body { font-family: Arial; background:#f8f8f8; text-align:center; padding-top:60px; }
-    #card { background:white; padding:30px; border-radius:10px; width:330px; margin:auto; box-shadow:0 0 10px #0002; }
-    input { padding:10px; width:200px; margin-top:15px; font-size:16px; }
-    button { margin-top:10px; padding:10px 20px; cursor:pointer; font-size:16px; }
-    #resultado { margin-top:25px; font-size:18px; font-weight:bold; }
+  body {
+    font-family: Arial, sans-serif;
+    margin: 0; padding: 0;
+    background: #fafafa;
+    color: #222;
+  }
+
+  header {
+    background: #198754;
+    padding: 20px;
+    color: #fff;
+    text-align: center;
+  }
+
+  nav {
+    background: #146c43;
+    padding: 10px;
+    text-align: center;
+  }
+
+  nav a {
+    color: white;
+    margin: 0 15px;
+    text-decoration: none;
+    font-weight: bold;
+  }
+
+  section {
+    padding: 30px 20px;
+    max-width: 900px;
+    margin: auto;
+  }
+
+  input, button {
+    padding: 10px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    font-size: 15px;
+  }
+
+  button {
+    background: #198754;
+    color: white;
+    border: none;
+    cursor: pointer;
+  }
+
+  table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+  th, td { padding: 10px; border-bottom: 1px solid #ddd; }
+  th { background: #f3f3f3; }
+
+  tr:hover { background: #f9f9f9; }
+
+  .hidden { display: none; }
 </style>
 </head>
+
 <body>
 
-<div id="card">
-    <h2>Consulta Amigo Secreto</h2>
-    <p>Digite seu token ou acesse pelo link enviado</p>
-    <input id="token" placeholder="Digite o token">
-    <button onclick="buscar()">Ver meu amigo 🎁</button>
-    <div id="resultado"></div>
-</div>
+<header>
+  <h1>🎉 Amigo Secreto da Família 🎁</h1>
+</header>
+
+<nav>
+  <a href="#sorteio">Resultado</a>
+  <a href="#presentes">Sugestões de Presentes</a>
+</nav>
+
+
+<!-- =======================
+     SEÇÃO 1 — RESULTADO
+======================== -->
+
+<section id="sorteio">
+  <h2>🔐 Consulte seu amigo secreto</h2>
+  <p>Digite seu token para ver quem você tirou:</p>
+
+  <input id="tokenInput" type="text" placeholder="Digite seu token">
+  <button onclick="checkToken()">Consultar</button>
+
+  <h3 id="result" style="margin-top:20px;"></h3>
+</section>
+
 
 <script>
-const dados = {
+const resultados = {
  "A92T":"Marcos Paulo",
  "L3PA":"Cláudia",
  "BR25":"Nilza",
@@ -42,21 +111,94 @@ const dados = {
  "LC44":"Fernandão",
  "CT66":"Fernandinho",
  "CR51":"Célia Maria"
-}
+};
 
-function buscar(){
-    const t = document.getElementById("token").value.trim().toUpperCase();
-    document.getElementById("resultado").innerHTML =
-       dados[t] ? `🎅 Seu amigo secreto é <br><br><span style='font-size:22px'>${dados[t]}</span>` 
-                : "Token inválido ❌";
-}
+function checkToken() {
+  const token = document.getElementById("tokenInput").value.trim().toUpperCase();
 
-// preenche token se veio por URL ?token=XX
-const url = new URLSearchParams(window.location.search);
-if(url.get("token")){
-    document.getElementById("token").value = url.get("token");
-    buscar();
+  if (resultados[token]) {
+    document.getElementById("result").innerHTML =
+      `🎁 Seu amigo secreto é: <strong>${resultados[token]}</strong>`;
+  } else {
+    document.getElementById("result").innerHTML =
+      "❌ Token inválido. Verifique e tente novamente.";
+  }
 }
 </script>
+
+
+
+<!-- =======================
+     SEÇÃO 2 — SUGESTÕES
+======================== -->
+
+<section id="presentes">
+  <h2>🎁 Sugestões de Presentes</h2>
+  <p>Veja o que já foi enviado pela família. Você também pode enviar uma sugestão:</p>
+
+  <a href="https://forms.gle/66DaEeY8cY3Pyc5D8"
+     target="_blank"
+     style="display:inline-block;margin:10px 0;padding:12px 20px;background:#198754;color:white;text-decoration:none;border-radius:6px;">
+     ➕ Enviar nova sugestão
+  </a>
+
+  <h3 style="margin-top:30px;">🔍 Buscar nome</h3>
+  <input id="search" type="text" placeholder="Filtrar por nome...">
+
+  <div id="count" style="margin:10px 0;color:#555;"></div>
+  <div id="lista-presentes">Carregando sugestões…</div>
+</section>
+
+
+
+<!-- SCRIPT DA PLANILHA -->
+
+<script>
+async function loadSuggestions(){
+  const sheetId = "1HZQljN2g5gNguZhnqnBU3hJj_VIfvcHrLjIi0atAF0E";
+  const url = `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:json`;
+
+  const res = await fetch(url);
+  const text = await res.text();
+  const json = JSON.parse(text.substring(47, text.length - 2));
+
+  const rows = json.table.rows;
+  const cols = json.table.cols.map(c => c.label);
+
+  window.dataRows = rows.map(r => r.c.map(c => c?.v ?? ""));
+
+  renderTable(window.dataRows, cols);
+}
+
+function renderTable(data, cols){
+  let html = "<table><tr>";
+  cols.forEach(c => html += `<th>${c}</th>`);
+  html += "</tr>";
+
+  data.forEach(row => {
+    html += "<tr>";
+    row.forEach(cell => html += `<td>${cell}</td>`);
+    html += "</tr>";
+  });
+
+  html += "</table>";
+
+  document.getElementById("lista-presentes").innerHTML = html;
+  document.getElementById("count").innerText =
+    `${data.length} sugestão(ões) encontrada(s)`;
+}
+
+document.getElementById("search").addEventListener("input", e => {
+  const q = e.target.value.toLowerCase();
+  const filtered = window.dataRows.filter(r =>
+    r.some(cell => cell.toLowerCase().includes(q))
+  );
+
+  renderTable(filtered, ["Nome", "Sugestão"]);
+});
+
+loadSuggestions();
+</script>
+
 </body>
 </html>
