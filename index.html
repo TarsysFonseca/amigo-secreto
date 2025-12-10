@@ -60,6 +60,52 @@
   tr:hover { background: #f9f9f9; }
 
   .hidden { display: none; }
+
+  /* Cards de Presentes */
+  .cards-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 20px;
+    margin-top: 20px;
+  }
+
+  .card {
+    background: white;
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+
+  .card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+  }
+
+  .card-name {
+    font-size: 18px;
+    font-weight: bold;
+    color: #198754;
+    margin-bottom: 12px;
+    border-bottom: 2px solid #198754;
+    padding-bottom: 8px;
+  }
+
+  .card-suggestion {
+    color: #444;
+    line-height: 1.6;
+    word-wrap: break-word;
+  }
+
+  .card-suggestion a {
+    color: #0d6efd;
+    text-decoration: none;
+    font-weight: 500;
+  }
+
+  .card-suggestion a:hover {
+    text-decoration: underline;
+  }
 </style>
 </head>
 
@@ -171,27 +217,40 @@ async function loadSuggestions(){
 }
 
 function renderTable(data, cols){
-  let html = "<table><tr>";
-  cols.forEach(c => html += `<th>${c}</th>`);
-  html += "</tr>";
+  let html = '<div class="cards-container">';
 
   data.forEach(row => {
-    html += "<tr>";
-    row.forEach(cell => html += `<td>${cell}</td>`);
-    html += "</tr>";
+    const nome = row[0] || "Sem nome";
+    const sugestao = row[1] || "Sem sugestão";
+    
+    // Converte URLs em links clicáveis
+    const sugestaoComLinks = linkify(sugestao);
+    
+    html += `
+      <div class="card">
+        <div class="card-name">🎁 ${nome}</div>
+        <div class="card-suggestion">${sugestaoComLinks}</div>
+      </div>
+    `;
   });
 
-  html += "</table>";
+  html += "</div>";
 
   document.getElementById("lista-presentes").innerHTML = html;
   document.getElementById("count").innerText =
     `${data.length} sugestão(ões) encontrada(s)`;
 }
 
+// Função para converter URLs em links clicáveis
+function linkify(text) {
+  const urlRegex = /(https?:\/\/[^\s]+)/g;
+  return text.replace(urlRegex, '<a href="$1" target="_blank">$1</a>');
+}
+
 document.getElementById("search").addEventListener("input", e => {
   const q = e.target.value.toLowerCase();
   const filtered = window.dataRows.filter(r =>
-    r.some(cell => cell.toLowerCase().includes(q))
+    r.some(cell => String(cell).toLowerCase().includes(q))
   );
 
   renderTable(filtered, ["Nome", "Sugestão"]);
