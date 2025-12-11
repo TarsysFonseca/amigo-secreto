@@ -234,9 +234,9 @@ function renderTable(data, cols){
 
   data.forEach(row => {
     const nome = row[2] || "Sem nome";
-    const s1 = row[3] || "Sem sugestão";
-    const s2 = row[4] || "Sem sugestão";
-    const s3 = row[5] || "Sem sugestão";
+    const s1 = row[3] || "";
+    const s2 = row[4] || "";
+    const s3 = row[5] || "";
 
     
     // Converte URLs em links clicáveis
@@ -247,8 +247,8 @@ function renderTable(data, cols){
     html += `
       <div class="card">
         <div class="card-name">🎁 ${nome}</div>
-        <div class="card-suggestion">${s1ComLinks}</div>
-        <div class="card-suggestion">${s2ComLinks}</div>
+        <div class="card-suggestion">${s1ComLinks}</div><br>
+        <div class="card-suggestion">${s2ComLinks}</div><br>
         <div class="card-suggestion">${s3ComLinks}</div>
       </div>
     `;
@@ -264,7 +264,7 @@ function renderTable(data, cols){
 // Função para converter URLs em links clicáveis
 function linkify(text) {
   const urlRegex = /(https?:\/\/[^\s]+)/g;
-  return text.replace(urlRegex, '<a href="$1" target="_blank">$1</a>');
+  return text.replace(urlRegex, '<a href="$1" target="_blank">$1</a><br>');
 }
 
 document.getElementById("search").addEventListener("input", e => {
