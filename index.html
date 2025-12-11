@@ -39,6 +39,14 @@
     margin: auto;
   }
 
+  #sorteio {
+    text-align: center;
+  }
+
+  #sorteio input, #sorteio button {
+    margin: 5px;
+  }
+
   input, button {
     padding: 10px;
     border-radius: 6px;
@@ -244,9 +252,11 @@ async function loadSuggestions(){
 }
 
 function renderTable(data, cols){
+  const remaining = 19 - data.length;
+
   let html = `
+    <h2>Ainda ${remaining === 1 ? 'falta' : 'faltam'} ${remaining} ${remaining === 1 ? 'pessoa enviar' : 'pessoas enviarem'} suas sugestões</h2>
     <div class="cards-container">
-      <h2>Ainda faltam ${19 - data.length} sugestões</h2>
   `;
 
   data.forEach(row => {
