@@ -233,10 +233,10 @@ function renderTable(data, cols){
   let html = '<div class="cards-container">';
 
   data.forEach(row => {
-    const nome = row[2] || "Sem nome";
-    const s1 = row[3] || "";
-    const s2 = row[4] || "";
-    const s3 = row[5] || "";
+    const nome = row[2] || "Amigo secreto";
+    const s1 = row[3] || "Não informado";
+    const s2 = row[4] || "Não informado";
+    const s3 = row[5] || "Não informado";
 
     
     // Converte URLs em links clicáveis
@@ -247,9 +247,9 @@ function renderTable(data, cols){
     html += `
       <div class="card">
         <div class="card-name">🎁 ${nome}</div>
-        <div class="card-suggestion">${s1ComLinks}</div><br>
-        <div class="card-suggestion">${s2ComLinks}</div><br>
-        <div class="card-suggestion">${s3ComLinks}</div>
+        <div class="card-suggestion"><span><b>Sugestão 1</b></span><br>${s1ComLinks}</div><br>
+        <div class="card-suggestion"><span><b>Sugestão 2</b></span><br>${s2ComLinks}</div><br>
+        <div class="card-suggestion"><span><b>Sugestão 3</b></span><br>${s3ComLinks}</div>
       </div>
     `;
   });
