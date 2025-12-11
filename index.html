@@ -218,6 +218,7 @@ window.addEventListener('DOMContentLoaded', () => {
   <input id="search" type="text" placeholder="Filtrar por nome...">
 
   <div id="count" style="margin:10px 0;color:#555;"></div>
+  <h2 id="people-count"></h2>
   <div id="lista-presentes">Carregando sugestões…</div>
 </section>
 
@@ -243,7 +244,10 @@ async function loadSuggestions(){
 }
 
 function renderTable(data, cols){
-  let html = '<div class="cards-container">';
+  let html = `
+    <div class="cards-container">
+      <h2>Ainda faltam ${19 - data.length} sugestões</h2>
+  `;
 
   data.forEach(row => {
     const nome = row[2] || "Amigo secreto";
